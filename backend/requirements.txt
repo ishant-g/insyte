@@ -1,0 +1,36 @@
+# Insyte backend runtime dependencies.
+# Pinned to versions verified on CPython 3.14 (the Docker base image).
+
+# ---- Web / API ----------------------------------------------------------
+fastapi==0.141.1
+uvicorn[standard]==0.52.4
+python-multipart==0.0.32
+
+# ---- Data / ORM --------------------------------------------------------
+SQLAlchemy==2.0.52
+alembic==1.19.1
+psycopg[binary]==3.3.4
+
+# ---- Config / validation ----------------------------------------------
+pydantic==2.13.4
+pydantic-settings==2.15.0
+python-dotenv==1.2.3
+
+# ---- Task queue --------------------------------------------------------
+celery==5.6.3
+redis==8.1.0
+
+# ---- Collection / intelligence ----------------------------------------
+httpx==0.28.1
+dnspython==2.8.0
+cryptography==50.0.1
+idna==3.19
+beautifulsoup4==4.15.0
+lxml==6.1.2
+packaging==26.3
+
+# ---- Reporting ---------------------------------------------------------
+reportlab==5.0.1
+
+# ---- Observability -----------------------------------------------------
+python-json-logger==4.2.0

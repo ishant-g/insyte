@@ -1,0 +1,47 @@
+[tool.ruff]
+line-length = 110
+target-version = "py313"
+exclude = [".venv", "alembic/versions"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "S", "C4", "SIM"]
+ignore = [
+  "S101",  # assert is fine in this codebase (used deliberately, not for validation)
+  "S104",  # 0.0.0.0 bind is intentional for a container
+  "S105",  # false positives on enum members like SECRET_INDICATOR
+  "S110",  # deliberate degrade-on-failure paths (cache, HTML parsing) — each is commented
+  "S112",
+  "B008",  # FastAPI's Depends()-in-default-argument is the framework's own pattern
+  "E501",  # long literals and generated data tables
+  "UP042",  # keep (str, Enum) for SQLAlchemy value compatibility
+  "UP046",  # legacy Generic syntax is intentional
+  "UP047",
+  "SIM102",
+  "SIM103",
+  "SIM105",
+  "C416",
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S101", "S105", "S106", "S108"]
+
+[tool.mypy]
+python_version = "3.13"
+ignore_missing_imports = true
+exclude = ["alembic/versions", ".venv"]
+warn_unused_ignores = false
+
+[tool.bandit]
+exclude_dirs = [".venv", "tests", "alembic"]
+skips = [
+  "B101",  # assert is used deliberately, not for validation
+  "B104",  # 0.0.0.0 bind is intentional for a container (HOST default in core/config.py)
+  "B110",  # reviewed: cache-degradation and HTML-parsing fallbacks, each commented in place
+  "B112",
+  # xml.sax.saxutils.escape() *escapes* text for safe embedding in ReportLab's
+  # markup-parsing Paragraph() — it does not parse untrusted XML, which is
+  # what B406 actually guards against. Flagging the import path here is a
+  # false positive; this is the correct defensive pattern for scan-derived
+  # (attacker-controlled) strings reaching the PDF renderer.
+  "B406",
+]

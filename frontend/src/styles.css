@@ -1,0 +1,544 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * Insyte design tokens - "Vibrant SaaS" theme.
+ *
+ * Direction: fresh, modern SaaS dashboard (Linear / Stripe / Raycast
+ * quality). Light theme is the primary experience: airy surfaces, a
+ * vibrant indigo-violet identity, emerald/amber/sky semantic accents.
+ * Dark mode is a refined deep-slate, not hacker-terminal: no neon green
+ * on black, no terminal aesthetics anywhere.
+ *
+ * Two independent axes, both driven by classes on <html> (see lib/theme.tsx):
+ *   - color scheme:  light (default :root)  /  dark (.dark)
+ *   - visual style:  refined (default)      /  minimal (.style-minimal)
+ *
+ * Severity colours are a separate semantic system (critical still reads
+ * red, etc.) and stay distinct from the brand accent.
+ */
+
+/* ------------------------------------------------------------------ */
+/* Light - vibrant (default)                                          */
+/* ------------------------------------------------------------------ */
+:root {
+  --background: oklch(0.982 0.004 260);
+  --foreground: oklch(0.23 0.02 265);
+
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.23 0.02 265);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.23 0.02 265);
+
+  /* Vibrant indigo-violet identity */
+  --primary: oklch(0.56 0.24 283);
+  --primary-foreground: oklch(1 0 0);
+
+  --secondary: oklch(0.95 0.015 280);
+  --secondary-foreground: oklch(0.32 0.05 283);
+  --muted: oklch(0.955 0.008 265);
+  --muted-foreground: oklch(0.47 0.025 265);
+  --accent: oklch(0.94 0.035 292);
+  --accent-foreground: oklch(0.38 0.12 288);
+
+  --destructive: oklch(0.60 0.22 25);
+  --destructive-foreground: oklch(1 0 0);
+  --border: oklch(0.905 0.01 265);
+  --input: oklch(0.905 0.01 265);
+  --ring: oklch(0.56 0.24 283);
+  --radius: 0.75rem;
+
+  --success: oklch(0.62 0.17 160);
+  --warning: oklch(0.72 0.16 75);
+
+  /* Severity accents - semantic, vibrant but distinguishable. */
+  --severity-critical: oklch(0.58 0.23 25);
+  --severity-high: oklch(0.65 0.20 45);
+  --severity-medium: oklch(0.75 0.16 80);
+  --severity-low: oklch(0.62 0.16 250);
+  --severity-informational: oklch(0.60 0.03 265);
+
+  --confidence-high: oklch(0.62 0.17 160);
+  --confidence-medium: oklch(0.75 0.16 80);
+  --confidence-low: oklch(0.60 0.03 265);
+
+  /* Chart palette - vibrant categorical set */
+  --chart-1: oklch(0.56 0.24 283);
+  --chart-2: oklch(0.65 0.19 330);
+  --chart-3: oklch(0.62 0.17 160);
+  --chart-4: oklch(0.72 0.16 75);
+  --chart-5: oklch(0.62 0.16 250);
+
+  /* Asset-graph node palette (read via getComputedStyle in the graph page;
+   * plain hex-ish oklch values so canvas can consume them). */
+  --graph-domain: oklch(0.60 0.18 255);
+  --graph-subdomain: oklch(0.70 0.14 250);
+  --graph-ipv4: oklch(0.68 0.16 70);
+  --graph-ipv6: oklch(0.74 0.14 85);
+  --graph-asn: oklch(0.62 0.20 315);
+  --graph-certificate: oklch(0.64 0.16 165);
+  --graph-url: oklch(0.58 0.08 285);
+  --graph-api: oklch(0.62 0.20 15);
+  --graph-javascript: oklch(0.78 0.15 95);
+  --graph-technology: oklch(0.66 0.16 145);
+  --graph-cloud: oklch(0.68 0.14 195);
+  --graph-email: oklch(0.66 0.16 55);
+  --graph-org: oklch(0.62 0.03 265);
+  --graph-fallback: oklch(0.60 0.04 265);
+
+  --sidebar: oklch(0.995 0.002 260);
+  --sidebar-foreground: oklch(0.28 0.02 265);
+  --sidebar-border: oklch(0.92 0.008 265);
+  --sidebar-accent: oklch(0.94 0.04 290);
+  --sidebar-accent-foreground: oklch(0.42 0.16 285);
+
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "JetBrains Mono", "SF Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+
+/* ------------------------------------------------------------------ */
+/* Dark - refined deep slate with vibrant accents (NOT terminal-styled)*/
+/* ------------------------------------------------------------------ */
+.dark {
+  --background: oklch(0.175 0.012 265);
+  --foreground: oklch(0.93 0.008 265);
+
+  --card: oklch(0.215 0.014 265);
+  --card-foreground: oklch(0.93 0.008 265);
+  --popover: oklch(0.23 0.015 265);
+  --popover-foreground: oklch(0.93 0.008 265);
+
+  --primary: oklch(0.72 0.17 288);
+  --primary-foreground: oklch(0.20 0.03 285);
+
+  --secondary: oklch(0.27 0.02 270);
+  --secondary-foreground: oklch(0.90 0.01 265);
+  --muted: oklch(0.25 0.015 265);
+  --muted-foreground: oklch(0.68 0.02 265);
+  --accent: oklch(0.30 0.05 285);
+  --accent-foreground: oklch(0.92 0.03 290);
+
+  --destructive: oklch(0.64 0.21 25);
+  --destructive-foreground: oklch(0.98 0.01 265);
+  --border: oklch(0.29 0.014 265);
+  --input: oklch(0.30 0.014 265);
+  --ring: oklch(0.72 0.17 288);
+
+  --success: oklch(0.70 0.16 160);
+  --warning: oklch(0.78 0.14 75);
+
+  --severity-critical: oklch(0.66 0.21 25);
+  --severity-high: oklch(0.71 0.18 45);
+  --severity-medium: oklch(0.79 0.14 85);
+  --severity-low: oklch(0.70 0.14 250);
+  --severity-informational: oklch(0.66 0.03 265);
+
+  --confidence-high: oklch(0.70 0.16 160);
+  --confidence-medium: oklch(0.79 0.14 85);
+  --confidence-low: oklch(0.60 0.03 265);
+
+  --chart-1: oklch(0.72 0.17 288);
+  --chart-2: oklch(0.72 0.16 330);
+  --chart-3: oklch(0.70 0.16 160);
+  --chart-4: oklch(0.78 0.14 75);
+  --chart-5: oklch(0.70 0.14 250);
+
+  --graph-domain: oklch(0.68 0.16 255);
+  --graph-subdomain: oklch(0.74 0.12 250);
+  --graph-ipv4: oklch(0.74 0.14 70);
+  --graph-ipv6: oklch(0.78 0.12 85);
+  --graph-asn: oklch(0.70 0.17 315);
+  --graph-certificate: oklch(0.70 0.14 165);
+  --graph-url: oklch(0.66 0.07 285);
+  --graph-api: oklch(0.70 0.18 15);
+  --graph-javascript: oklch(0.80 0.13 95);
+  --graph-technology: oklch(0.72 0.14 145);
+  --graph-cloud: oklch(0.74 0.12 195);
+  --graph-email: oklch(0.72 0.14 55);
+  --graph-org: oklch(0.66 0.03 265);
+  --graph-fallback: oklch(0.62 0.04 265);
+
+  --sidebar: oklch(0.155 0.012 265);
+  --sidebar-foreground: oklch(0.88 0.01 265);
+  --sidebar-border: oklch(0.26 0.014 265);
+  --sidebar-accent: oklch(0.28 0.05 285);
+  --sidebar-accent-foreground: oklch(0.90 0.05 290);
+}
+
+/* ------------------------------------------------------------------ */
+/* Minimal style - monochrome accent, tighter radius (light + dark)   */
+/* ------------------------------------------------------------------ */
+.style-minimal {
+  --radius: 0.375rem;
+  --primary: oklch(0.30 0.02 265);
+  --primary-foreground: oklch(0.99 0.002 265);
+  --accent: oklch(0.95 0.005 265);
+  --accent-foreground: oklch(0.30 0.02 265);
+  --ring: oklch(0.45 0.02 265);
+  --sidebar-accent: oklch(0.94 0.005 265);
+  --sidebar-accent-foreground: oklch(0.30 0.02 265);
+  --chart-1: oklch(0.45 0.02 265);
+  --chart-2: oklch(0.60 0.02 265);
+  --chart-3: oklch(0.72 0.015 265);
+  --chart-4: oklch(0.80 0.01 265);
+  --chart-5: oklch(0.55 0.02 265);
+}
+
+.dark.style-minimal {
+  --primary: oklch(0.90 0.008 265);
+  --primary-foreground: oklch(0.18 0.01 265);
+  --accent: oklch(0.28 0.01 265);
+  --accent-foreground: oklch(0.90 0.008 265);
+  --ring: oklch(0.70 0.015 265);
+  --sidebar-accent: oklch(0.28 0.01 265);
+  --sidebar-accent-foreground: oklch(0.90 0.008 265);
+  --chart-1: oklch(0.85 0.01 265);
+  --chart-2: oklch(0.70 0.015 265);
+  --chart-3: oklch(0.55 0.015 265);
+  --chart-4: oklch(0.42 0.015 265);
+  --chart-5: oklch(0.75 0.01 265);
+}
+
+.style-refined {
+  /* intentionally empty - inherits the :root / .dark vibrant values */
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-severity-critical: var(--severity-critical);
+  --color-severity-high: var(--severity-high);
+  --color-severity-medium: var(--severity-medium);
+  --color-severity-low: var(--severity-low);
+  --color-severity-informational: var(--severity-informational);
+  --color-confidence-high: var(--confidence-high);
+  --color-confidence-medium: var(--confidence-medium);
+  --color-confidence-low: var(--confidence-low);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --font-mono: var(--font-mono);
+  --font-sans: var(--font-sans);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    /* Subtle vibrant backdrop: a whisper of indigo at the top of the page. */
+    background-image:
+      radial-gradient(60rem 22rem at 50% -8rem, color-mix(in oklab, var(--primary) 7%, transparent), transparent 70%);
+    background-attachment: fixed;
+  }
+  .dark body {
+    background-image:
+      radial-gradient(60rem 24rem at 50% -8rem, color-mix(in oklab, var(--primary) 10%, transparent), transparent 70%);
+  }
+  code,
+  pre,
+  .font-mono {
+    font-family: var(--font-mono);
+  }
+  ::selection {
+    background: color-mix(in oklab, var(--primary) 28%, transparent);
+  }
+  /* Minimal style flattens surfaces. */
+  .style-minimal .shadow-sm,
+  .style-minimal .shadow,
+  .style-minimal .shadow-md,
+  .style-minimal .shadow-lg {
+    box-shadow: none !important;
+  }
+  .style-minimal body {
+    background-image: none;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Micro-interactions & motion                                         */
+/* ------------------------------------------------------------------ */
+
+/* Smooth theme switching: theme.tsx adds .theme-anim to <html> briefly
+ * when the mode/style changes so surfaces cross-fade instead of snapping. */
+.theme-anim,
+.theme-anim *,
+.theme-anim *::before,
+.theme-anim *::after {
+  transition:
+    background-color 0.35s ease,
+    border-color 0.35s ease,
+    color 0.35s ease,
+    fill 0.35s ease,
+    stroke 0.35s ease !important;
+}
+
+/* Page enter: soft rise-and-fade for route content. Applied to the
+ * AppShell content wrapper. */
+@keyframes insyte-page-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.insyte-page-enter {
+  animation: insyte-page-in 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Staggered card entrance for dashboards */
+@keyframes insyte-rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.995);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+.insyte-rise {
+  animation: insyte-rise-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Shimmer for skeleton loaders */
+@keyframes insyte-shimmer {
+  0% {
+    background-position: -400px 0;
+  }
+  100% {
+    background-position: 400px 0;
+  }
+}
+.insyte-skeleton {
+  background: linear-gradient(
+    90deg,
+    color-mix(in oklab, var(--muted) 70%, transparent) 25%,
+    color-mix(in oklab, var(--muted-foreground) 14%, transparent) 50%,
+    color-mix(in oklab, var(--muted) 70%, transparent) 75%
+  );
+  background-size: 800px 100%;
+  animation: insyte-shimmer 1.6s linear infinite;
+}
+
+/* Button press feedback (applied globally to real buttons) */
+@layer base {
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]) {
+    transition:
+      transform 0.12s ease,
+      background-color 0.18s ease,
+      border-color 0.18s ease,
+      box-shadow 0.18s ease,
+      color 0.18s ease;
+  }
+  button:not(:disabled):active,
+  [role="button"]:not([aria-disabled="true"]):active {
+    transform: scale(0.97);
+  }
+}
+
+/* Card hover lift - opt-in via .insyte-card-hover */
+.insyte-card-hover {
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.25s ease,
+    border-color 0.2s ease;
+}
+.insyte-card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 12px 32px -12px color-mix(in oklab, var(--primary) 22%, transparent),
+    0 2px 8px -2px rgb(0 0 0 / 0.06);
+  border-color: color-mix(in oklab, var(--primary) 30%, var(--border));
+}
+.dark .insyte-card-hover:hover {
+  box-shadow:
+    0 12px 32px -12px rgb(0 0 0 / 0.5),
+    0 0 0 1px color-mix(in oklab, var(--primary) 25%, transparent);
+}
+
+/* Sidebar nav: smooth active indicator bar */
+[data-sidebar="menu-button"] {
+  position: relative;
+  transition:
+    background-color 0.18s ease,
+    color 0.18s ease,
+    transform 0.12s ease;
+}
+[data-sidebar="menu-button"]::before {
+  content: "";
+  position: absolute;
+  left: -8px;
+  top: 50%;
+  height: 0;
+  width: 3px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, var(--primary), color-mix(in oklab, var(--primary) 55%, var(--chart-2)));
+  transform: translateY(-50%);
+  transition:
+    height 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.2s ease;
+  opacity: 0;
+}
+[data-sidebar="menu-button"][data-active="true"] {
+  background: linear-gradient(
+    90deg,
+    color-mix(in oklab, var(--primary) 14%, transparent),
+    color-mix(in oklab, var(--primary) 4%, transparent)
+  );
+  color: var(--sidebar-accent-foreground);
+  font-weight: 600;
+}
+[data-sidebar="menu-button"][data-active="true"]::before {
+  height: 62%;
+  opacity: 1;
+}
+[data-sidebar="menu-button"]:not([data-active="true"]):hover {
+  background: color-mix(in oklab, var(--primary) 6%, transparent);
+}
+
+/* Animated gradient progress bar */
+@keyframes insyte-progress-slide {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+.insyte-progress-fill {
+  background: linear-gradient(90deg, var(--primary), var(--chart-2), var(--primary));
+  background-size: 200% 100%;
+  animation: insyte-progress-slide 2.2s ease infinite;
+  transition: width 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Spinning loader ring with gradient */
+@keyframes insyte-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.insyte-loader {
+  animation: insyte-spin 0.9s linear infinite;
+}
+
+/* Pulsing live dot for "running" states */
+@keyframes insyte-pulse-dot {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.55;
+    transform: scale(0.82);
+  }
+}
+.insyte-live-dot {
+  animation: insyte-pulse-dot 1.6s ease-in-out infinite;
+}
+
+/* Focus visibility: vibrant ring */
+@layer base {
+  :focus-visible {
+    outline: 2px solid color-mix(in oklab, var(--ring) 70%, transparent);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+}
+
+/* Scrollbar: slim and tinted */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: color-mix(in oklab, var(--muted-foreground) 30%, transparent);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in oklab, var(--primary) 45%, transparent);
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+/* Asset graph node hover glow */
+.graph-canvas g.cursor-pointer {
+  transition: filter 0.15s ease;
+}
+.graph-canvas g.cursor-pointer:hover {
+  filter: brightness(1.18) saturate(1.15);
+}
+.graph-canvas g.cursor-pointer:hover circle {
+  filter: drop-shadow(0 0 6px currentColor);
+}
+
+/* Data table polish */
+.insyte-table tbody tr {
+  transition: background-color 0.15s ease, transform 0.15s ease;
+}
+.insyte-table tbody tr:hover {
+  background-color: color-mix(in oklch, var(--primary) 5%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .insyte-page-enter,
+  .insyte-rise,
+  .insyte-skeleton,
+  .insyte-progress-fill,
+  .insyte-live-dot {
+    animation: none !important;
+  }
+  .theme-anim,
+  .theme-anim *,
+  .theme-anim *::before,
+  .theme-anim *::after {
+    transition: none !important;
+  }
+}

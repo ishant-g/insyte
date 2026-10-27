@@ -1,0 +1,147 @@
+# Insyte: Passive Exposure Intelligence
+#
+# First run:
+#   cp .env.example .env
+#   docker compose up --build
+#
+# Migrations run automatically (backend/entrypoint.sh), so no separate
+# `alembic upgrade head` step is required. Once the api service reports
+# healthy, the frontend is at http://localhost:5173 and the API at
+# http://localhost:8000.
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: insyte-postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-insyte}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-insyte}
+      POSTGRES_DB: ${POSTGRES_DB:-insyte}
+    volumes:
+      - insyte_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-insyte}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    # Not published to the host by default: only the api/worker reach it,
+    # over the compose network. Uncomment to inspect it directly.
+    # ports:
+    #   - "5432:5432"
+
+  redis:
+    image: redis:7-alpine
+    container_name: insyte-redis
+    command: ["redis-server", "--save", "", "--appendonly", "no"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    # ports:
+    #   - "6379:6379"
+
+  api:
+    build:
+      context: ./backend
+    container_name: insyte-api
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-insyte}:${POSTGRES_PASSWORD:-insyte}@postgres:5432/${POSTGRES_DB:-insyte}
+      REDIS_URL: redis://redis:6379/0
+      CELERY_BROKER_URL: redis://redis:6379/1
+      CELERY_RESULT_BACKEND: redis://redis:6379/2
+    ports:
+      - "8000:8000"
+    volumes:
+      - insyte_reports:/var/lib/insyte
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  worker:
+    build:
+      context: ./backend
+    # No container_name here on purpose: horizontal scaling
+    # (`docker compose up --scale worker=3`) requires compose-generated names.
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-insyte}:${POSTGRES_PASSWORD:-insyte}@postgres:5432/${POSTGRES_DB:-insyte}
+      REDIS_URL: redis://redis:6379/0
+      CELERY_BROKER_URL: redis://redis:6379/1
+      CELERY_RESULT_BACKEND: redis://redis:6379/2
+    command: ["celery", "-A", "app.workers.celery_app.celery", "worker", "-l", "info", "--concurrency=2"]
+    volumes:
+      - insyte_reports:/var/lib/insyte
+    healthcheck:
+      test: ["CMD-SHELL", "celery -A app.workers.celery_app.celery inspect ping -d celery@$$HOSTNAME --timeout 5 | grep -q pong"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      api:
+        condition: service_healthy
+
+  # Horizontal scaling: `docker compose up --scale worker=3` runs three
+  # worker containers. Task config is scale-safe: acks_late plus
+  # reject_on_worker_lost means a killed worker's scan is redelivered, and
+  # the Redis visibility timeout (1h) exceeds the scan hard time limit
+  # (30m), so long scans are never executed twice.
+  beat:
+    build:
+      context: ./backend
+    container_name: insyte-beat
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-insyte}:${POSTGRES_PASSWORD:-insyte}@postgres:5432/${POSTGRES_DB:-insyte}
+      REDIS_URL: redis://redis:6379/0
+      CELERY_BROKER_URL: redis://redis:6379/1
+      CELERY_RESULT_BACKEND: redis://redis:6379/2
+    # Fires due scan schedules every 5 minutes (see beat_schedule in
+    # app/workers/celery_app.py). Exactly one beat replica: two beats would
+    # double-fire schedules, so never scale this service.
+    command: ["celery", "-A", "app.workers.celery_app.celery", "beat", "-l", "info", "--schedule", "/tmp/celerybeat-schedule"]
+    healthcheck:
+      test: ["CMD-SHELL", "test -f /tmp/celerybeat-schedule"]
+      interval: 60s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      api:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./frontend
+      # Build-time only: see frontend/Dockerfile. Override with
+      # INSYTE_PUBLIC_API_URL in .env when the API is not reachable at
+      # localhost:8000 from the browser (e.g. a non-local deployment).
+      args:
+        VITE_API_URL: ${INSYTE_PUBLIC_API_URL:-http://localhost:8000}
+    container_name: insyte-frontend
+    ports:
+      - "5173:3000"
+    depends_on:
+      - api
+
+volumes:
+  insyte_postgres_data:
+  insyte_reports:
