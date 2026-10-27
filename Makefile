@@ -31,7 +31,7 @@ test-backend: ## Run backend tests in a throwaway Python container
 		bash -c "pip install -q -r requirements-dev.txt && pytest -q"
 
 typecheck: ## Typecheck and build the frontend
-	cd frontend && npm ci --no-audit --no-fund && npm run typecheck && npm run build
+	cd frontend && npm ci --no-audit --no-fund && npm run build && npm run typecheck
 
 build: ## Build the backend and frontend images
 	docker build -t insyte-api ./backend

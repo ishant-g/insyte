@@ -965,9 +965,9 @@ pip-audit
 ```bash
 cd frontend
 npm ci
+npm run build
 npm run typecheck
 npm run lint
-npm run build
 ```
 
 CI (`.github/workflows/ci.yml`) runs backend tests, frontend typecheck/build,

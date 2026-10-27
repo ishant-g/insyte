@@ -50,8 +50,8 @@ See the [Local development](README.md#local-development) section of the README.
    ```bash
    cd frontend
    npm ci
-   npm run typecheck
    npm run build
+   npm run typecheck
    ```
 
 5. Describe the change, its user-visible impact, and any security
